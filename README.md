@@ -16,11 +16,14 @@ Navigate seamlessly using React Router.
 
 ## 🛠️ Tech Stack
 
-# Frontend: React, React Router, Tailwind CSS
+# Frontend: 
+React, React Router, Tailwind CSS
 
-# Backend: Firebase Authentication, Firebase Firestore/Realtime Database
+# Backend: 
+Firebase Authentication, Firebase Firestore/Realtime Database
 
-# Hosting: Firebase Hosting
+# Hosting: 
+Firebase Hosting
 
 ## 🚀 Features
 
