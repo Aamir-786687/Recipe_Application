@@ -38,7 +38,9 @@ Navigation: Smooth routing using React Router.
 
 📦 recipe-management-app
 
+
 ├── 📂 public           # Static assets (images, icons, etc.)
+
 
 ├── 📂 src
 
