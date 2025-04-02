@@ -6,13 +6,14 @@ import Recipes from './pages/Recipes';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Footer from './pages/Footer';
-import Navbar from "./Components/Navbar";
+// import Navbar from "./Components/Navbar";
+import Navbarrr from './Components/Navbarrr';
 
 
 const App = () => {
   return (
     <div>
-      <Navbar />
+      <Navbarrr />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

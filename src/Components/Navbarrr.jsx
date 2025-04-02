@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { FirebaseAuthContext } from "../context/AuthProvider";
 
-const Navbar = () => {
+const Navbarrr = () => {
     const { user, logout } = useContext(FirebaseAuthContext);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -101,4 +101,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default Navbarrr;
