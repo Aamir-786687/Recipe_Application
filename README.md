@@ -37,17 +37,29 @@ Navigation: Smooth routing using React Router.
 ## 📂 Folder Structure
 
 📦 recipe-management-app
+
 ├── 📂 public           # Static assets (images, icons, etc.)
+
 ├── 📂 src
+
 │   ├── 📂 components   # Reusable UI components (Navbar, Footer, etc.)
+
 │   ├── 📂 pages        # Page components (Home, About, Recipes, Register, Login)
+
 │   ├── 📂 assets       # Images and other static assets
+
 │   ├── 📜 App.js       # Main application file
+
 │   ├── 📜 index.js     # Entry point
+
 │   ├── 📜 firebase.js  # Firebase configuration
+
 ├── 📜 .gitignore       # Git ignore file
+
 ├── 📜 package.json     # Project dependencies
+
 ├── 📜 README.md        # Project documentation
+
 
 ## 🛠️ Installation & Setup
 
