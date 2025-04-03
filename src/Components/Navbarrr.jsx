@@ -1,104 +1,180 @@
-import React, { useState, useEffect, useContext } from "react";
-import { NavLink } from "react-router-dom";
-import { FirebaseAuthContext } from "../context/AuthProvider";
 
-const Navbarrr = () => {
-    const { user, logout } = useContext(FirebaseAuthContext);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
+import { useState, useEffect, useContext } from "react"
+import { NavLink } from "react-router-dom"
+import { FirebaseAuthContext } from "../context/AuthProvider"
+import { FaHeart, FaHome, FaUtensils, FaInfoCircle, FaUser } from "react-icons/fa"
 
-    useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 10);
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+const Navbar = () => {
+  const { user, logout } = useContext(FirebaseAuthContext)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
-    return (
-        <nav className={`bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg border-b-4 border-yellow-500 ${scrolled ? "py-2" : "py-4"} sticky top-0 z-50 transition-all`}>
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10)
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16">
-                    <div className="flex items-center px-4 py-2 bg-gradient-to-r from-yellow-500 to-yellow-700 rounded-xl shadow-lg transform transition-transform duration-300 hover:scale-105">
-                        <span className="text-white font-bold text-xl">RECIPE BOOK</span>
-                    </div>
+  return (
+    <nav className={`bg-white shadow-md sticky top-0 z-50 transition-all ${scrolled ? "py-2" : "py-4"}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center">
+            <NavLink to="/home" className="flex items-center">
+              <img src="/images/logo.png" alt="CulinaryDelight Logo" className="h-10 w-auto mr-2" />
+              <span className="text-teal-600 font-bold text-xl">CulinaryDelight</span>
+            </NavLink>
+          </div>
 
-                    <div className="hidden md:flex space-x-6">
-                        {["Home", "Recipes", "About"].map((item) => (
-                            <NavLink
-                                key={item}
-                                to={`/${item.toLowerCase()}`}
-                                className={({ isActive }) =>
-                                    `px-4 py-2 rounded-lg text-white font-medium transition-all ${isActive ? "bg-yellow-500" : "hover:text-yellow-400"}`
-                                }
-                            >
-                                {item}
-                            </NavLink>
-                        ))}
-                        {user ? (
-                            <button
-                                onClick={logout}
-                                className="px-5 py-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-500 transition"
-                            >
-                                Logout
-                            </button>
-                        ) : (
-                            <NavLink
-                                to="/register"
-                                className="px-5 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-500 transition"
-                            >
-                                Register
-                            </NavLink>
-                        )}
-                    </div>
+          <div className="hidden md:flex space-x-6">
+            <NavLink
+              to="/home"
+              className={({ isActive }) =>
+                `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive ? "text-white bg-teal-500" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                }`
+              }
+            >
+              <FaHome className="mr-1" /> Home
+            </NavLink>
+            <NavLink
+              to="/recipes"
+              className={({ isActive }) =>
+                `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive ? "text-white bg-teal-500" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                }`
+              }
+            >
+              <FaUtensils className="mr-1" /> Recipes
+            </NavLink>
+            <NavLink
+              to="/favorites"
+              className={({ isActive }) =>
+                `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive ? "text-white bg-teal-500" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                }`
+              }
+            >
+              <FaHeart className="mr-1" /> Favorites
+            </NavLink>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive ? "text-white bg-teal-500" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                }`
+              }
+            >
+              <FaInfoCircle className="mr-1" /> About
+            </NavLink>
 
-                    {/* Mobile Menu Button */}
-                    <div className="md:hidden">
-                        <button
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="p-2 rounded-md text-white hover:bg-gray-700 transition"
-                        >
-                            ☰
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Mobile Menu */}
-            {isMobileMenuOpen && (
-                <div className="md:hidden bg-gray-900 text-white px-4 py-3 space-y-3 shadow-lg transition-all">
-                    {["Home", "Recipes", "About"].map((item) => (
-                        <NavLink
-                            key={item}
-                            to={`/${item.toLowerCase()}`}
-                            className="block px-3 py-2 rounded-md hover:bg-gray-700 transition"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            {item}
-                        </NavLink>
-                    ))}
-                    {user ? (
-                        <button
-                            onClick={() => {
-                                logout();
-                                setIsMobileMenuOpen(false);
-                            }}
-                            className="w-full text-left px-3 py-2 rounded-md bg-red-600 hover:bg-red-500 transition"
-                        >
-                            Logout
-                        </button>
-                    ) : (
-                        <NavLink
-                            to="/register"
-                            className="block px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-500 transition"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            Register
-                        </NavLink>
-                    )}
-                </div>
+            {user ? (
+              <button
+                onClick={logout}
+                className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md shadow-sm hover:bg-red-600 transition-colors"
+              >
+                <FaUser className="mr-1" /> Logout
+              </button>
+            ) : (
+              <NavLink
+                to="/login"
+                className="flex items-center px-4 py-2 bg-teal-500 text-white rounded-md shadow-sm hover:bg-teal-600 transition-colors"
+              >
+                <FaUser className="mr-1" /> Login
+              </NavLink>
             )}
-        </nav>
-    );
-};
+          </div>
 
-export default Navbarrr;
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white px-4 pt-2 pb-4 space-y-2 shadow-lg">
+          <NavLink
+            to="/home"
+            className={({ isActive }) =>
+              `flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                isActive ? "bg-teal-500 text-white" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+              }`
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <FaHome className="mr-2" /> Home
+          </NavLink>
+          <NavLink
+            to="/recipes"
+            className={({ isActive }) =>
+              `flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                isActive ? "bg-teal-500 text-white" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+              }`
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <FaUtensils className="mr-2" /> Recipes
+          </NavLink>
+          <NavLink
+            to="/favorites"
+            className={({ isActive }) =>
+              `flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                isActive ? "bg-teal-500 text-white" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+              }`
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <FaHeart className="mr-2" /> Favorites
+          </NavLink>
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              `flex items-center px-3 py-2 rounded-md text-sm font-medium ${
+                isActive ? "bg-teal-500 text-white" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+              }`
+            }
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <FaInfoCircle className="mr-2" /> About
+          </NavLink>
+
+          {user ? (
+            <button
+              onClick={() => {
+                logout()
+                setIsMobileMenuOpen(false)
+              }}
+              className="w-full flex items-center px-3 py-2 bg-red-500 text-white rounded-md"
+            >
+              <FaUser className="mr-2" /> Logout
+            </button>
+          ) : (
+            <NavLink
+              to="/login"
+              className="w-full flex items-center px-3 py-2 bg-teal-500 text-white rounded-md"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <FaUser className="mr-2" /> Login
+            </NavLink>
+          )}
+        </div>
+      )}
+    </nav>
+  )
+}
+
+export default Navbar
+

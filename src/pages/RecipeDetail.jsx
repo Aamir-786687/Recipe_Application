@@ -1,0 +1,272 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useParams } from "react-router-dom"
+import axios from "axios"
+import { FaClock, FaUtensils, FaHeart, FaRegHeart, FaPrint, FaShare, FaCheckCircle } from "react-icons/fa"
+import { useFavorites } from "../context/FavoritesContext"
+import { toast } from "react-toastify"
+
+const RecipeDetail = () => {
+  const { id } = useParams()
+  const API_KEY = "5cb7e02c54724129bcd6402da3c77e8a"
+  const [recipe, setRecipe] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [activeTab, setActiveTab] = useState("ingredients")
+  const { favorites, addToFavorites, removeFromFavorite } = useFavorites()
+
+  const isFavorite = favorites.some((fav) => fav.id === Number.parseInt(id))
+
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        const res = await axios.get(
+          `https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}&includeNutrition=true`,
+        )
+
+        setRecipe(res.data)
+        setLoading(false)
+      } catch (error) {
+        console.error("API Error:", error)
+        setError("Failed to load recipe details. Please try again later.")
+        setLoading(false)
+      }
+    }
+
+    fetchRecipe()
+  }, [id])
+
+  const handleFavoriteToggle = () => {
+    if (isFavorite) {
+      removeFromFavorite(Number.parseInt(id))
+      toast.info("Recipe removed from favorites")
+    } else {
+      addToFavorites(recipe)
+      toast.success("Recipe added to favorites")
+    }
+  }
+
+  const handlePrint = () => {
+    window.print()
+  }
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: recipe.title,
+          text: `Check out this recipe: ${recipe.title}`,
+          url: window.location.href,
+        })
+        .catch((error) => console.log("Error sharing:", error))
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+      toast.success("Link copied to clipboard!")
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-500"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto py-12 px-4">
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
+          <p className="font-medium">Error</p>
+          <p>{error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!recipe) return null
+
+  return (
+    <div className="bg-gray-50 py-10 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* Recipe Header */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+          <div className="relative h-96">
+            <img
+              src={recipe.image || "/images/placeholder-food.jpg"}
+              alt={recipe.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+              <div className="p-6 w-full">
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{recipe.title}</h1>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {recipe.dishTypes &&
+                    recipe.dishTypes.slice(0, 3).map((type, index) => (
+                      <span key={index} className="px-3 py-1 bg-teal-500 text-white rounded-full text-sm">
+                        {type}
+                      </span>
+                    ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6">
+            <div className="flex flex-wrap justify-between items-center mb-6">
+              <div className="flex items-center space-x-6 text-gray-700">
+                <div className="flex items-center">
+                  <FaClock className="mr-2 text-teal-500" />
+                  <span>{recipe.readyInMinutes} minutes</span>
+                </div>
+                <div className="flex items-center">
+                  <FaUtensils className="mr-2 text-teal-500" />
+                  <span>{recipe.servings} servings</span>
+                </div>
+              </div>
+
+              <div className="flex space-x-3 mt-4 sm:mt-0">
+                <button
+                  onClick={handleFavoriteToggle}
+                  className={`flex items-center px-4 py-2 rounded-md ${
+                    isFavorite ? "bg-red-500 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  } transition-colors`}
+                >
+                  {isFavorite ? <FaHeart className="mr-2" /> : <FaRegHeart className="mr-2" />}
+                  {isFavorite ? "Saved" : "Save"}
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                >
+                  <FaPrint className="mr-2" />
+                  Print
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                >
+                  <FaShare className="mr-2" />
+                  Share
+                </button>
+              </div>
+            </div>
+
+            <div className="prose max-w-none mb-6">
+              <div dangerouslySetInnerHTML={{ __html: recipe.summary }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Recipe Content Tabs */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="border-b border-gray-200">
+            <nav className="flex">
+              <button
+                onClick={() => setActiveTab("ingredients")}
+                className={`px-6 py-4 text-sm font-medium ${
+                  activeTab === "ingredients"
+                    ? "border-b-2 border-teal-500 text-teal-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Ingredients
+              </button>
+              <button
+                onClick={() => setActiveTab("instructions")}
+                className={`px-6 py-4 text-sm font-medium ${
+                  activeTab === "instructions"
+                    ? "border-b-2 border-teal-500 text-teal-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Instructions
+              </button>
+              <button
+                onClick={() => setActiveTab("nutrition")}
+                className={`px-6 py-4 text-sm font-medium ${
+                  activeTab === "nutrition"
+                    ? "border-b-2 border-teal-500 text-teal-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Nutrition
+              </button>
+            </nav>
+          </div>
+
+          <div className="p-6">
+            {activeTab === "ingredients" && (
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Ingredients</h2>
+                <ul className="space-y-3">
+                  {recipe.extendedIngredients &&
+                    recipe.extendedIngredients.map((ingredient, index) => (
+                      <li key={index} className="flex items-start">
+                        <FaCheckCircle className="text-teal-500 mt-1 mr-2 flex-shrink-0" />
+                        <span>
+                          <span className="font-medium">
+                            {ingredient.amount} {ingredient.unit}
+                          </span>{" "}
+                          {ingredient.originalName || ingredient.name}
+                        </span>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
+
+            {activeTab === "instructions" && (
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Instructions</h2>
+                {recipe.analyzedInstructions && recipe.analyzedInstructions.length > 0 ? (
+                  <ol className="space-y-6">
+                    {recipe.analyzedInstructions[0].steps.map((step) => (
+                      <li key={step.number} className="flex">
+                        <div className="bg-teal-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
+                          {step.number}
+                        </div>
+                        <div className="mt-0.5">{step.step}</div>
+                      </li>
+                    ))}
+                  </ol>
+                ) : recipe.instructions ? (
+                  <div dangerouslySetInnerHTML={{ __html: recipe.instructions }}></div>
+                ) : (
+                  <p className="text-gray-600">No instructions available for this recipe.</p>
+                )}
+              </div>
+            )}
+
+            {activeTab === "nutrition" && (
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Nutrition Information</h2>
+                {recipe.nutrition ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {recipe.nutrition.nutrients.slice(0, 8).map((nutrient, index) => (
+                      <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                        <div className="text-sm text-gray-500">{nutrient.name}</div>
+                        <div className="text-lg font-semibold text-gray-900">
+                          {nutrient.amount} {nutrient.unit}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-600">No nutrition information available for this recipe.</p>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default RecipeDetail
+
