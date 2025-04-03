@@ -1,19 +1,18 @@
-import { Route, Routes, Navigate } from "react-router-dom"
-import Home from "./pages/Home"
-import About from "./pages/About"
-import Recipes from "./pages/Recipes"
-import Register from "./pages/Register"
-import Login from "./pages/Login"
-import RecipeDetail from "./pages/RecipeDetail"
-import Favorites from "./pages/Favorites"
-import { FavoritesProvider } from "./context/FavoritesContext"
-import Navbarrr from "./Components/Navbarrr"
-import Footer from "./pages/Footer"
-import ProtectedRoute from "./Components/ProtectedRoute"
+import { Route, Routes, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Recipes from "./pages/Recipes";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import RecipeDetail from "./pages/RecipeDetail";
+import Favorites from "./pages/Favorites";
+import { FavoritesProvider } from "./context/FavoritesContext";
+import Navbarrr from "./Components/Navbarrr";
+import Footer from "./pages/Footer";
 
 const showAlert = (message) => {
-  alert(message)
-}
+  alert(message);
+};
 
 const App = () => {
   return (
@@ -27,14 +26,7 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/recipes" element={<Recipes />} />
             <Route path="/recipes/:id" element={<RecipeDetail />} />
-            <Route
-              path="/favorites"
-              element={
-                <ProtectedRoute>
-                  <Favorites />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
           </Routes>
@@ -42,8 +34,7 @@ const App = () => {
         <Footer />
       </div>
     </FavoritesProvider>
-  )
-}
+  );
+};
 
-export default App
-
+export default App;

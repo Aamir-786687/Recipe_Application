@@ -1,18 +1,15 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { initializeApp } from "firebase/app"
 
 const firebaseConfig = {
   apiKey: "9354d74c7d9847b5b32a8f8e7f578b5b",
-  authDomain: "fir-integration-i.firebaseapp.com",
-  databaseURL: "https://fir-integration-i-default-rtdb.firebaseio.com",
-  projectId: "fir-integration-i",
-  storageBucket: "fir-integration-i.firebasestorage.app",
-  messagingSenderId: "1089742290911",
-  appId: "1:1089742290911:web:11db2d35827cfa9b670e6a",
-  measurementId: "G-SFQ89L7LGG"
-};
+  authDomain: "recipes-bff88.firebaseapp.com",
+  projectId: "recipes-bff88",
+  storageBucket: "recipes-bff88.firebasestorage.app",
+  messagingSenderId: "321218631273",
+  appId: "1:321218631273:web:e17dc326abc973b90bf4f8",
+}
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const app = initializeApp(firebaseConfig)
+
+export default app
+
