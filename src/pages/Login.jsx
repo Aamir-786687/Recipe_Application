@@ -1,189 +1,128 @@
-"use client"
-
-import { useState, useContext, useEffect } from "react"
-import { useNavigate, useLocation, Link } from "react-router-dom"
-import { FaGoogle, FaEnvelope, FaLock, FaExclamationCircle } from "react-icons/fa"
-import { FirebaseAuthContext } from "../context/AuthProvider"
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { FaGoogle } from "react-icons/fa";
 
 const Login = () => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const { login, loginWithGoogle, authError, setAuthError, user } = useContext(FirebaseAuthContext)
-  const [formData, setFormData] = useState({ email: "", password: "" })
-  const [errors, setErrors] = useState({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({ email: "", password: "" });
+    const [errors, setErrors] = useState({});
 
-  // Get the redirect path from location state or default to home
-  const from = location.state?.from || "/"
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
-  // If user is already logged in, redirect to the intended destination
-  useEffect(() => {
-    if (user) {
-      navigate(from)
-    }
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.email) newErrors.email = "Email is required";
+        if (!formData.password) newErrors.password = "Password is required";
 
-    // Clear any auth errors when component mounts
-    return () => {
-      if (setAuthError) setAuthError(null)
-    }
-  }, [user, navigate, from, setAuthError])
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            alert("Login successful");
+            navigate("/");
+        }
+    };
 
-    // Clear field-specific error when user types
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }))
-    }
-  }
+    const handleGoogleLogin = async () => {
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        try {
+            const result = await signInWithPopup(auth, provider);
+            alert("Google login successful!");
+            navigate("/");
+        } catch (error) {
+            alert("Error during Google login: " + error.message);
+        }
+    };
 
-  const validateForm = () => {
-    const newErrors = {}
-    if (!formData.email.trim()) newErrors.email = "Email is required"
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid"
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100">
+            <div className="w-full max-w-md bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-700">
+                <h2 className="text-3xl font-bold text-center text-yellow-400 mb-6">
+                    Welcome Back!
+                </h2>
 
-    if (!formData.password) newErrors.password = "Password is required"
-    else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters"
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Email */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300">
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            className="w-full p-3 mt-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Enter your email"
+                        />
+                        {errors.email && (
+                            <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                        )}
+                    </div>
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+                    {/* Password */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            className="w-full p-3 mt-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                            placeholder="Enter your password"
+                        />
+                        {errors.password && (
+                            <p className="mt-1 text-sm text-red-400">{errors.password}</p>
+                        )}
+                    </div>
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (validateForm()) {
-      setIsSubmitting(true)
-      const result = await login(formData.email, formData.password)
-      setIsSubmitting(false)
+                    {/* Login Button */}
+                    <button
+                        type="submit"
+                        className="w-full py-3 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-600 transition duration-200"
+                    >
+                        Log In
+                    </button>
+                </form>
 
-      if (result.success) {
-        // Redirect to the page they were trying to access
-        navigate(from)
-      } else {
-        // Error is handled by the context
-        setErrors((prev) => ({ ...prev, general: result.error }))
-      }
-    }
-  }
+                {/* Separator */}
+                <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-600"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                        <span className="px-2 bg-gray-800 text-gray-400">Or log in with</span>
+                    </div>
+                </div>
 
-  const handleGoogleLogin = async () => {
-    try {
-      setIsSubmitting(true)
-      const result = await loginWithGoogle()
-      setIsSubmitting(false)
+                {/* Google Login */}
+                <button
+                    onClick={handleGoogleLogin}
+                    className="w-full py-3 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg flex items-center justify-center space-x-3 hover:bg-gray-600 transition duration-200"
+                >
+                    <FaGoogle className="text-red-500" size={20} />
+                    <span>Login with Google</span>
+                </button>
 
-      if (result.success) {
-        // Redirect to the page they were trying to access
-        navigate(from)
-      } else {
-        setErrors((prev) => ({ ...prev, general: result.error }))
-      }
-    } catch (error) {
-      setIsSubmitting(false)
-      setErrors((prev) => ({ ...prev, general: "An unexpected error occurred. Please try again." }))
-    }
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-100">
-      <div className="w-full max-w-md bg-gray-800 p-8 rounded-xl shadow-xl border border-gray-700">
-        <h2 className="text-3xl font-bold text-center text-yellow-400 mb-6">Welcome Back!</h2>
-
-        {(errors.general || authError) && (
-          <div className="mb-4 p-3 bg-red-500/80 text-white rounded-lg flex items-center">
-            <FaExclamationCircle className="mr-2 flex-shrink-0" />
-            <span>{errors.general || authError}</span>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300">Email Address</label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaEnvelope className="text-gray-500" />
-              </div>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`w-full pl-10 p-3 bg-gray-700 border ${
-                  errors.email ? "border-red-500" : "border-gray-600"
-                } rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400`}
-                placeholder="Enter your email"
-              />
+                <p className="mt-6 text-center text-sm text-gray-400">
+                    Don't have an account?{" "}
+                    <a href="/register" className="text-yellow-400 hover:underline">
+                        Sign up here
+                    </a>
+                </p>
             </div>
-            {errors.email && <p className="mt-1 text-sm text-red-400">{errors.email}</p>}
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300">Password</label>
-            <div className="relative mt-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaLock className="text-gray-500" />
-              </div>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className={`w-full pl-10 p-3 bg-gray-700 border ${
-                  errors.password ? "border-red-500" : "border-gray-600"
-                } rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-400`}
-                placeholder="Enter your password"
-              />
-            </div>
-            {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password}</p>}
-          </div>
-
-          {/* Login Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`w-full py-3 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-600 transition duration-200 ${
-              isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-            }`}
-          >
-            {isSubmitting ? "Logging in..." : "Log In"}
-          </button>
-        </form>
-
-        {/* Separator */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-600"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-gray-800 text-gray-400">Or log in with</span>
-          </div>
         </div>
+    );
+};
 
-        {/* Google Login */}
-        <button
-          onClick={handleGoogleLogin}
-          disabled={isSubmitting}
-          className={`w-full py-3 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg flex items-center justify-center space-x-3 hover:bg-gray-600 transition duration-200 ${
-            isSubmitting ? "opacity-70 cursor-not-allowed" : ""
-          }`}
-        >
-          <FaGoogle className="text-red-500" size={20} />
-          <span>{isSubmitting ? "Processing..." : "Login with Google"}</span>
-        </button>
-
-        <p className="mt-6 text-center text-sm text-gray-400">
-          Don't have an account?{" "}
-          <Link to="/register" className="text-yellow-400 hover:underline">
-            Sign up here
-          </Link>
-        </p>
-      </div>
-    </div>
-  )
-}
-
-export default Login
-
+export default Login;

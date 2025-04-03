@@ -1,4 +1,7 @@
 import { FaUtensils, FaLeaf, FaHeart, FaUsers, FaGlobeAmericas, FaBookOpen } from "react-icons/fa"
+import c1 from '../assets/chef-1.jpg'
+import c2 from '../assets/chef-2.jpg'
+import c3 from '../assets/chef.jpg'
 
 const About = () => {
   const features = [
@@ -44,20 +47,20 @@ const About = () => {
     {
       name: "Emma Rodriguez",
       role: "Head Chef & Founder",
-      image: "/images/chef-1.jpg",
-      bio: "Emma has over 15 years of culinary experience in top restaurants across Europe and America. She founded CulinaryDelight to share her passion for accessible gourmet cooking.",
+      image: c2,
+      bio: "Emma has over 8 years of culinary experience in top restaurants across Europe and America. She founded Recipe Book to share her passion for accessible gourmet cooking.",
     },
     {
       name: "David Chen",
       role: "Nutrition Specialist",
-      image: "/images/chef-2.jpg",
+      image: c1,
       bio: "With a background in nutritional science, David ensures all our recipes are balanced and provides expert advice on dietary requirements and healthy eating.",
     },
     {
-      name: "Sarah Johnson",
+      name: "John Carl",
       role: "Recipe Developer",
-      image: "/images/chef-3.jpg",
-      bio: "Sarah specializes in developing and testing recipes that are both delicious and foolproof. She has a knack for simplifying complex techniques for home cooks.",
+      image: c3,
+      bio: "John specializes in developing and testing recipes that are both delicious and foolproof. He has a knack for simplifying complex techniques for home cooks.",
     },
   ]
 
@@ -70,7 +73,7 @@ const About = () => {
       >
         <div className="absolute inset-0 bg-black bg-opacity-60"></div>
         <div className="relative max-w-7xl mx-auto px-4 h-full flex flex-col justify-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">About CulinaryDelight</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">About Recipe Book</h1>
           <p className="text-xl text-white max-w-2xl">
             Bringing delicious recipes and culinary inspiration to food lovers around the world
           </p>
@@ -85,7 +88,7 @@ const About = () => {
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Our Story</h2>
               <div className="w-20 h-1 bg-teal-500 mb-6"></div>
               <p className="text-gray-700 mb-4">
-                CulinaryDelight began in 2018 with a simple mission: to make cooking accessible, enjoyable, and
+                Recipe Book began in 2018 with a simple mission: to make cooking accessible, enjoyable, and
                 delicious for everyone. What started as a small blog sharing family recipes has grown into a
                 comprehensive platform with thousands of recipes from around the world.
               </p>
@@ -96,7 +99,7 @@ const About = () => {
               </p>
               <p className="text-gray-700">
                 Whether you're a beginner cook looking for simple weeknight dinners or an experienced chef seeking
-                culinary challenges, CulinaryDelight is your trusted companion in the kitchen.
+                culinary challenges, Recipe Book is your trusted companion in the kitchen.
               </p>
             </div>
             <div className="md:w-1/2">
@@ -117,7 +120,7 @@ const About = () => {
             <h2 className="text-3xl font-bold text-gray-900 mb-2">What We Offer</h2>
             <div className="w-20 h-1 bg-teal-500 mx-auto mb-6"></div>
             <p className="text-gray-700 max-w-2xl mx-auto">
-              CulinaryDelight provides everything you need to explore the world of cooking and create amazing meals
+              Recipe Book provides everything you need to explore the world of cooking and create amazing meals
             </p>
           </div>
 
@@ -139,7 +142,7 @@ const About = () => {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Meet Our Team</h2>
             <div className="w-20 h-1 bg-teal-500 mx-auto mb-6"></div>
-            <p className="text-gray-700 max-w-2xl mx-auto">The passionate culinary experts behind CulinaryDelight</p>
+            <p className="text-gray-700 max-w-2xl mx-auto">The passionate culinary experts behind Recipe Book</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

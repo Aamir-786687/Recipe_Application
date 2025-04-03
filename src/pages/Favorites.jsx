@@ -1,4 +1,4 @@
-// src/pages/Favorites.js
+"use client";
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { useFavorites } from "../context/FavoritesContext";
@@ -19,12 +19,8 @@ const Favorites = () => {
     <div className="bg-gray-50 py-10 px-4 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            My Favorite Recipes
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            All your saved recipes in one place.
-          </p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">My Favorite Recipes</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">All your saved recipes in one place</p>
         </div>
 
         {favorites.length > 0 ? (
@@ -38,12 +34,9 @@ const Favorites = () => {
             <div className="inline-flex justify-center items-center w-16 h-16 bg-gray-100 rounded-full mb-4">
               <FaHeart className="text-gray-400 text-2xl" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-              No favorites yet
-            </h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">No favorites yet</h2>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Start exploring recipes and save your favorites to access them
-              quickly later.
+              Start exploring recipes and save your favorites to access them quickly later.
             </p>
             <Link
               to="/recipes"

@@ -1,40 +1,25 @@
-"use client"
-
-import { Link } from "react-router-dom"
-import { FaClock, FaUtensils, FaHeart } from "react-icons/fa"
-import { useFavorites } from "../context/FavoritesContext"
-import { toast } from "react-toastify"
-import { useContext } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import { FirebaseAuthContext } from "../context/AuthProvider"
+"use client";
+import { Link } from "react-router-dom";
+import { FaClock, FaUtensils, FaHeart } from "react-icons/fa";
+import { useFavorites } from "../context/FavoritesContext";
 
 const RecipeCard = ({ recipe, showViewButton = true }) => {
-  const { favorites, addToFavorites, removeFromFavorite } = useFavorites()
-  const { user } = useContext(FirebaseAuthContext)
-  const navigate = useNavigate()
-  const location = useLocation()
+  const { favorites, addToFavorites, removeFromFavorite } = useFavorites();
 
-  const isFavorite = favorites.some((fav) => fav.id === recipe.id)
+  const isFavorite = favorites.some((fav) => fav.id === recipe.id);
 
   const handleFavoriteClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-
-    if (!user) {
-      // Redirect to login if not authenticated
-      toast.info("Please login to save favorites")
-      navigate("/login", { state: { from: location.pathname } })
-      return
-    }
+    e.preventDefault();
+    e.stopPropagation();
 
     if (isFavorite) {
-      removeFromFavorite(recipe.id)
-      toast.info("Recipe removed from favorites")
+      removeFromFavorite(recipe.id);
+      alert("Recipe removed from favorites");
     } else {
-      addToFavorites(recipe)
-      toast.success("Recipe added to favorites")
+      addToFavorites(recipe);
+      alert("Recipe added to favorites");
     }
-  }
+  };
 
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -44,8 +29,8 @@ const RecipeCard = ({ recipe, showViewButton = true }) => {
           alt={recipe.title}
           className="w-full h-48 object-cover"
           onError={(e) => {
-            e.target.onerror = null
-            e.target.src = "/images/placeholder-food.jpg"
+            e.target.onerror = null;
+            e.target.src = "/images/placeholder-food.jpg";
           }}
         />
         <button
@@ -88,8 +73,7 @@ const RecipeCard = ({ recipe, showViewButton = true }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RecipeCard
-
+export default RecipeCard;
