@@ -7,8 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center mb-4">
-              <img src="/images/logo.png" alt="CulinaryDelight Logo" className="h-10 w-auto mr-2" />
-              <h3 className="text-xl font-bold text-teal-600">CulinaryDelight</h3>
+              <h3 className="text-teal-600 font-bold text-2xl">RECIPE BOOK </h3>
             </div>
             <p className="text-gray-600 mb-4">
               Discover incredible recipes that will bring joy to your kitchen and delight to your table.
@@ -75,7 +74,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-200 mt-10 pt-6 text-center">
-          <p className="text-gray-600">&copy; {new Date().getFullYear()} CulinaryDelight. All rights reserved.</p>
+          <p className="text-gray-600">&copy; {new Date().getFullYear()} RecipeBook. All rights reserved.</p>
         </div>
       </div>
     </footer>

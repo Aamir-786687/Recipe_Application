@@ -1,13 +1,12 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaSearch, FaUtensils, FaClock, FaLeaf } from "react-icons/fa";
 import RecipeCard from "../Components/RecipeCard";
+import bg from '../assets/Hero-bg.jpg'
 
 const Home = () => {
-  const API_KEY = "5cb7e02c54724129bcd6402da3c77e8a";
+  const API_KEY = "9354d74c7d9847b5b32a8f8e7f578b5b";
   const [featuredRecipe, setFeaturedRecipe] = useState(null);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -88,34 +87,23 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 ">
       {/* Hero Section */}
       <section
-        className="relative bg-cover bg-center h-[500px]"
-        style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        <div className="relative max-w-7xl mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-            Discover Delicious Recipes
-          </h1>
-          <p className="text-xl text-white mb-8 max-w-2xl">
-            Find and save the perfect recipes for any occasion, cuisine, or
-            dietary preference
-          </p>
+  className="relative bg-cover bg-center h-[500px]"
+  style={{ backgroundImage: `url(${bg})`}}
+>
+  <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+  <div className="relative max-w-7xl mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
+    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+      Discover Delicious Recipes
+    </h1>
+    <p className="text-xl text-white mb-8 max-w-2xl">
+      Find and save the perfect recipes for any occasion, cuisine, or dietary preference
+    </p>
 
-          <div className="w-full max-w-md relative">
-            <input
-              type="text"
-              placeholder="Search for recipes..."
-              className="w-full py-3 px-5 pr-12 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-            />
-            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-teal-500 hover:text-teal-700">
-              <FaSearch size={20} />
-            </button>
-          </div>
-        </div>
-      </section>
+  </div>
+</section>
 
       {/* Featured Recipe */}
       {featuredRecipe && (

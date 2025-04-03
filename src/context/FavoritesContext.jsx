@@ -1,98 +1,116 @@
-import { createContext, useState, useContext, useEffect } from "react"
-import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, doc } from "firebase/firestore"
-import { FirebaseAuthContext } from "./AuthProvider"
+// src/context/FavoritesContext.js
+import { createContext, useState, useContext, useEffect } from "react";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
+import { FirebaseAuthContext } from "./AuthProvider";
 
-const FavoritesContext = createContext()
+const FavoritesContext = createContext();
 
-export const useFavorites = () => useContext(FavoritesContext)
+export const useFavorites = () => useContext(FavoritesContext);
 
 export const FavoritesProvider = ({ children }) => {
-  const [favorites, setFavorites] = useState([])
-  const [loading, setLoading] = useState(true)
-  const { user } = useContext(FirebaseAuthContext)
-  const db = getFirestore()
+  const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useContext(FirebaseAuthContext);
+  const db = getFirestore();
 
   // Fetch favorites when user changes
   useEffect(() => {
     const fetchFavorites = async () => {
       if (!user) {
-        setFavorites([])
-        setLoading(false)
-        return
+        setFavorites([]);
+        setLoading(false);
+        return;
       }
 
       try {
-        setLoading(true)
-        const q = query(collection(db, "favorites"), where("userId", "==", user.uid))
-        const querySnapshot = await getDocs(q)
+        setLoading(true);
+        const q = query(
+          collection(db, "favorites"),
+          where("userId", "==", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
 
-        const favoritesData = []
-        querySnapshot.forEach((doc) => {
-          favoritesData.push({
-            id: doc.data().recipeId,
-            docId: doc.id,
-            ...doc.data().recipeData,
-          })
-        })
+        const favoritesData = querySnapshot.docs.map((doc) => ({
+          id: doc.data().recipeId,
+          docId: doc.id,
+          ...doc.data().recipeData,
+        }));
 
-        setFavorites(favoritesData)
+        setFavorites(favoritesData);
       } catch (error) {
-        console.error("Error fetching favorites:", error)
+        console.error("Error fetching favorites:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchFavorites()
-  }, [user, db])
+    fetchFavorites();
+  }, [user, db]);
 
+  // Add to favorites
   const addToFavorites = async (recipe) => {
-    if (!user) return
+    if (!user) return;
 
     try {
       const docRef = await addDoc(collection(db, "favorites"), {
         userId: user.uid,
         recipeId: recipe.id,
-        recipeData: recipe,
+        recipeData: { ...recipe, id: recipe.id }, // Ensure ID is stored
         createdAt: new Date(),
-      })
+      });
 
-      setFavorites([...favorites, { ...recipe, docId: docRef.id }])
+      setFavorites((prevFavorites) => [
+        ...prevFavorites,
+        { ...recipe, docId: docRef.id },
+      ]);
     } catch (error) {
-      console.error("Error adding to favorites:", error)
+      console.error("Error adding to favorites:", error);
     }
-  }
+  };
 
+  // Remove from favorites
   const removeFromFavorite = async (recipeId) => {
-    if (!user) return
+    if (!user) return;
 
     try {
-      const favorite = favorites.find((fav) => fav.id === recipeId)
+      const favorite = favorites.find((fav) => fav.id === recipeId);
+
       if (!favorite || !favorite.docId) {
         // Try to find the document ID if not cached
-        const q = query(collection(db, "favorites"), where("userId", "==", user.uid), where("recipeId", "==", recipeId))
-        const querySnapshot = await getDocs(q)
+        const q = query(
+          collection(db, "favorites"),
+          where("userId", "==", user.uid),
+          where("recipeId", "==", recipeId)
+        );
+        const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {
-          await deleteDoc(doc(db, "favorites", querySnapshot.docs[0].id))
+          await deleteDoc(doc(db, "favorites", querySnapshot.docs[0].id));
         }
       } else {
-        await deleteDoc(doc(db, "favorites", favorite.docId))
+        await deleteDoc(doc(db, "favorites", favorite.docId));
       }
 
-      setFavorites(favorites.filter((fav) => fav.id !== recipeId))
+      setFavorites(favorites.filter((fav) => fav.id !== recipeId));
     } catch (error) {
-      console.error("Error removing from favorites:", error)
+      console.error("Error removing from favorites:", error);
     }
-  }
+  };
 
-  const value = {
-    favorites,
-    loading,
-    addToFavorites,
-    removeFromFavorite,
-  }
-
-  return <FavoritesContext.Provider value={value}>{children}</FavoritesContext.Provider>
-}
-
+  return (
+    <FavoritesContext.Provider
+      value={{ favorites, loading, addToFavorites, removeFromFavorite }}
+    >
+      {children}
+    </FavoritesContext.Provider>
+  );
+};

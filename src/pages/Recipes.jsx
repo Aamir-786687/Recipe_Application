@@ -1,12 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import axios from "axios"
 import { FaSearch, FaFilter } from "react-icons/fa"
 import RecipeCard from "../Components/RecipeCard"
+import { useNavigate } from "react-router-dom"
+import { FirebaseAuthContext } from "../context/AuthProvider"
 
 const Recipes = () => {
-  const API_KEY = "5cb7e02c54724129bcd6402da3c77e8a"
+  const API_KEY = "9354d74c7d9847b5b32a8f8e7f578b5b"
   const [query, setQuery] = useState("")
   const [recipes, setRecipes] = useState([])
   const [loading, setLoading] = useState(true)
@@ -79,8 +81,18 @@ const Recipes = () => {
     "Drink",
   ]
 
+  const { user } = useContext(FirebaseAuthContext)
+  const navigate = useNavigate()
+
   const handleSearch = async (e) => {
     e?.preventDefault()
+
+    // If user is trying to use filters but not logged in, redirect to login
+    if (!user && (filters.diet || filters.cuisine || filters.type || filters.maxReadyTime)) {
+      alert("Please login to use advanced search filters")
+      navigate("/login", { state: { from: "/recipes" } })
+      return
+    }
 
     try {
       setLoading(true)

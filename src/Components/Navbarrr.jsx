@@ -1,28 +1,38 @@
+import { useState, useEffect, useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { FirebaseAuthContext } from "../context/AuthProvider";
+import {
+  FaHeart,
+  FaHome,
+  FaUtensils,
+  FaInfoCircle,
+  FaUser,
+} from "react-icons/fa";
 
-import { useState, useEffect, useContext } from "react"
-import { NavLink } from "react-router-dom"
-import { FirebaseAuthContext } from "../context/AuthProvider"
-import { FaHeart, FaHome, FaUtensils, FaInfoCircle, FaUser } from "react-icons/fa"
-
-const Navbar = () => {
-  const { user, logout } = useContext(FirebaseAuthContext)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+const Navbarrr = () => {
+  const { user, logout } = useContext(FirebaseAuthContext);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <nav className={`bg-white shadow-md sticky top-0 z-50 transition-all ${scrolled ? "py-2" : "py-4"}`}>
+    <nav
+      className={`bg-white shadow-md sticky top-0 z-50 transition-all ${
+        scrolled ? "py-2" : "py-4"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <NavLink to="/home" className="flex items-center">
-              <img src="/images/logo.png" alt="CulinaryDelight Logo" className="h-10 w-auto mr-2" />
-              <span className="text-teal-600 font-bold text-xl">CulinaryDelight</span>
+              <span className="text-teal-600 font-bold text-2xl">
+                RECIPE BOOK{" "}
+              </span>
             </NavLink>
           </div>
 
@@ -31,7 +41,9 @@ const Navbar = () => {
               to="/home"
               className={({ isActive }) =>
                 `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive ? "text-white bg-teal-500" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                  isActive
+                    ? "text-white bg-teal-500"
+                    : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
                 }`
               }
             >
@@ -41,7 +53,9 @@ const Navbar = () => {
               to="/recipes"
               className={({ isActive }) =>
                 `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive ? "text-white bg-teal-500" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                  isActive
+                    ? "text-white bg-teal-500"
+                    : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
                 }`
               }
             >
@@ -51,7 +65,9 @@ const Navbar = () => {
               to="/favorites"
               className={({ isActive }) =>
                 `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive ? "text-white bg-teal-500" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                  isActive
+                    ? "text-white bg-teal-500"
+                    : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
                 }`
               }
             >
@@ -61,7 +77,9 @@ const Navbar = () => {
               to="/about"
               className={({ isActive }) =>
                 `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive ? "text-white bg-teal-500" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                  isActive
+                    ? "text-white bg-teal-500"
+                    : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
                 }`
               }
             >
@@ -91,11 +109,26 @@ const Navbar = () => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors"
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 {isMobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 )}
               </svg>
             </button>
@@ -110,7 +143,9 @@ const Navbar = () => {
             to="/home"
             className={({ isActive }) =>
               `flex items-center px-3 py-2 rounded-md text-sm font-medium ${
-                isActive ? "bg-teal-500 text-white" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                isActive
+                  ? "bg-teal-500 text-white"
+                  : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
               }`
             }
             onClick={() => setIsMobileMenuOpen(false)}
@@ -121,7 +156,9 @@ const Navbar = () => {
             to="/recipes"
             className={({ isActive }) =>
               `flex items-center px-3 py-2 rounded-md text-sm font-medium ${
-                isActive ? "bg-teal-500 text-white" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                isActive
+                  ? "bg-teal-500 text-white"
+                  : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
               }`
             }
             onClick={() => setIsMobileMenuOpen(false)}
@@ -132,7 +169,9 @@ const Navbar = () => {
             to="/favorites"
             className={({ isActive }) =>
               `flex items-center px-3 py-2 rounded-md text-sm font-medium ${
-                isActive ? "bg-teal-500 text-white" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                isActive
+                  ? "bg-teal-500 text-white"
+                  : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
               }`
             }
             onClick={() => setIsMobileMenuOpen(false)}
@@ -143,7 +182,9 @@ const Navbar = () => {
             to="/about"
             className={({ isActive }) =>
               `flex items-center px-3 py-2 rounded-md text-sm font-medium ${
-                isActive ? "bg-teal-500 text-white" : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
+                isActive
+                  ? "bg-teal-500 text-white"
+                  : "text-gray-700 hover:bg-teal-50 hover:text-teal-600"
               }`
             }
             onClick={() => setIsMobileMenuOpen(false)}
@@ -154,8 +195,8 @@ const Navbar = () => {
           {user ? (
             <button
               onClick={() => {
-                logout()
-                setIsMobileMenuOpen(false)
+                logout();
+                setIsMobileMenuOpen(false);
               }}
               className="w-full flex items-center px-3 py-2 bg-red-500 text-white rounded-md"
             >
@@ -173,8 +214,7 @@ const Navbar = () => {
         </div>
       )}
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbarrr;

@@ -1,17 +1,31 @@
 "use client"
+
 import { Link } from "react-router-dom"
 import { FaClock, FaUtensils, FaHeart } from "react-icons/fa"
 import { useFavorites } from "../context/FavoritesContext"
 import { toast } from "react-toastify"
+import { useContext } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import { FirebaseAuthContext } from "../context/AuthProvider"
 
 const RecipeCard = ({ recipe, showViewButton = true }) => {
   const { favorites, addToFavorites, removeFromFavorite } = useFavorites()
+  const { user } = useContext(FirebaseAuthContext)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const isFavorite = favorites.some((fav) => fav.id === recipe.id)
 
   const handleFavoriteClick = (e) => {
     e.preventDefault()
     e.stopPropagation()
+
+    if (!user) {
+      // Redirect to login if not authenticated
+      toast.info("Please login to save favorites")
+      navigate("/login", { state: { from: location.pathname } })
+      return
+    }
 
     if (isFavorite) {
       removeFromFavorite(recipe.id)

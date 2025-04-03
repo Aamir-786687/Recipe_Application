@@ -4,20 +4,22 @@ import About from "./pages/About"
 import Recipes from "./pages/Recipes"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
-import Footer from "./components/Footer"
-import Navbar from "./components/Navbar"
 import RecipeDetail from "./pages/RecipeDetail"
 import Favorites from "./pages/Favorites"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
 import { FavoritesProvider } from "./context/FavoritesContext"
+import Navbarrr from "./Components/Navbarrr"
+import Footer from "./pages/Footer"
+import ProtectedRoute from "./Components/ProtectedRoute"
+
+const showAlert = (message) => {
+  alert(message)
+}
 
 const App = () => {
   return (
     <FavoritesProvider>
       <div className="flex flex-col min-h-screen bg-gray-50">
-        <ToastContainer position="top-right" autoClose={3000} />
-        <Navbar />
+        <Navbarrr />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Navigate to="/home" />} />
@@ -25,7 +27,14 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/recipes" element={<Recipes />} />
             <Route path="/recipes/:id" element={<RecipeDetail />} />
-            <Route path="/favorites" element={<Favorites />} />
+            <Route
+              path="/favorites"
+              element={
+                <ProtectedRoute>
+                  <Favorites />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
           </Routes>

@@ -1,20 +1,22 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useState, useEffect, useContext } from "react"
+import { useParams, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { FaClock, FaUtensils, FaHeart, FaRegHeart, FaPrint, FaShare, FaCheckCircle } from "react-icons/fa"
 import { useFavorites } from "../context/FavoritesContext"
-import { toast } from "react-toastify"
+import { FirebaseAuthContext } from "../context/AuthProvider"
 
 const RecipeDetail = () => {
   const { id } = useParams()
-  const API_KEY = "5cb7e02c54724129bcd6402da3c77e8a"
+  const API_KEY = "9354d74c7d9847b5b32a8f8e7f578b5b"
   const [recipe, setRecipe] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [activeTab, setActiveTab] = useState("ingredients")
   const { favorites, addToFavorites, removeFromFavorite } = useFavorites()
+  const { user } = useContext(FirebaseAuthContext)
+  const navigate = useNavigate()
 
   const isFavorite = favorites.some((fav) => fav.id === Number.parseInt(id))
 
@@ -41,12 +43,19 @@ const RecipeDetail = () => {
   }, [id])
 
   const handleFavoriteToggle = () => {
+    if (!user) {
+      // Redirect to login if not authenticated
+      alert("Please login to save favorites")
+      navigate("/login", { state: { from: `/recipes/${id}` } })
+      return
+    }
+
     if (isFavorite) {
       removeFromFavorite(Number.parseInt(id))
-      toast.info("Recipe removed from favorites")
+      alert("Recipe removed from favorites")
     } else {
       addToFavorites(recipe)
-      toast.success("Recipe added to favorites")
+      alert("Recipe added to favorites")
     }
   }
 
@@ -65,7 +74,7 @@ const RecipeDetail = () => {
         .catch((error) => console.log("Error sharing:", error))
     } else {
       navigator.clipboard.writeText(window.location.href)
-      toast.success("Link copied to clipboard!")
+      alert("Link copied to clipboard!")
     }
   }
 
@@ -93,7 +102,6 @@ const RecipeDetail = () => {
   return (
     <div className="bg-gray-50 py-10 px-4">
       <div className="max-w-5xl mx-auto">
-        {/* Recipe Header */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
           <div className="relative h-96">
             <img
@@ -104,14 +112,6 @@ const RecipeDetail = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
               <div className="p-6 w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{recipe.title}</h1>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {recipe.dishTypes &&
-                    recipe.dishTypes.slice(0, 3).map((type, index) => (
-                      <span key={index} className="px-3 py-1 bg-teal-500 text-white rounded-full text-sm">
-                        {type}
-                      </span>
-                    ))}
-                </div>
               </div>
             </div>
           </div>
@@ -162,7 +162,6 @@ const RecipeDetail = () => {
           </div>
         </div>
 
-        {/* Recipe Content Tabs */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="border-b border-gray-200">
             <nav className="flex">
@@ -201,65 +200,19 @@ const RecipeDetail = () => {
 
           <div className="p-6">
             {activeTab === "ingredients" && (
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Ingredients</h2>
-                <ul className="space-y-3">
-                  {recipe.extendedIngredients &&
-                    recipe.extendedIngredients.map((ingredient, index) => (
-                      <li key={index} className="flex items-start">
-                        <FaCheckCircle className="text-teal-500 mt-1 mr-2 flex-shrink-0" />
-                        <span>
-                          <span className="font-medium">
-                            {ingredient.amount} {ingredient.unit}
-                          </span>{" "}
-                          {ingredient.originalName || ingredient.name}
-                        </span>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            )}
-
-            {activeTab === "instructions" && (
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Instructions</h2>
-                {recipe.analyzedInstructions && recipe.analyzedInstructions.length > 0 ? (
-                  <ol className="space-y-6">
-                    {recipe.analyzedInstructions[0].steps.map((step) => (
-                      <li key={step.number} className="flex">
-                        <div className="bg-teal-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
-                          {step.number}
-                        </div>
-                        <div className="mt-0.5">{step.step}</div>
-                      </li>
-                    ))}
-                  </ol>
-                ) : recipe.instructions ? (
-                  <div dangerouslySetInnerHTML={{ __html: recipe.instructions }}></div>
-                ) : (
-                  <p className="text-gray-600">No instructions available for this recipe.</p>
-                )}
-              </div>
-            )}
-
-            {activeTab === "nutrition" && (
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Nutrition Information</h2>
-                {recipe.nutrition ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {recipe.nutrition.nutrients.slice(0, 8).map((nutrient, index) => (
-                      <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                        <div className="text-sm text-gray-500">{nutrient.name}</div>
-                        <div className="text-lg font-semibold text-gray-900">
-                          {nutrient.amount} {nutrient.unit}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-600">No nutrition information available for this recipe.</p>
-                )}
-              </div>
+              <ul className="space-y-3">
+                {recipe.extendedIngredients?.map((ingredient, index) => (
+                  <li key={index} className="flex items-start">
+                    <FaCheckCircle className="text-teal-500 mt-1 mr-2 flex-shrink-0" />
+                    <span>
+                      <span className="font-medium">
+                        {ingredient.amount} {ingredient.unit}
+                      </span>{" "}
+                      {ingredient.originalName || ingredient.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
         </div>
