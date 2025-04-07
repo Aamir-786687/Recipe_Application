@@ -6,7 +6,7 @@ import RecipeCard from "../Components/RecipeCard";
 import bg from '../assets/Hero-bg.jpg'
 
 const Home = () => {
-  const API_KEY = "9354d74c7d9847b5b32a8f8e7f578b5b";
+  const API_KEY = "16ee2db26f5d46d8928bd7621ab5d9c2";
   const [featuredRecipe, setFeaturedRecipe] = useState(null);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const [categories, setCategories] = useState([]);

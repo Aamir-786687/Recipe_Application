@@ -12,17 +12,17 @@ import {
 } from "react-icons/fa";
 
 import { FirebaseAuthContext } from "../context/AuthProvider";
-import { useFavorites } from "../hooks/useFavorites"; // ✅ ADD THIS
+import { useFavorites } from "../hooks/useFavorites"; 
 
 const RecipeDetail = () => {
   const { id } = useParams();
-  const API_KEY = "9354d74c7d9847b5b32a8f8e7f578b5b";
+  const API_KEY = "16ee2db26f5d46d8928bd7621ab5d9c2";
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("ingredients");
 
-  const { favorites, addToFavorites, removeFromFavorites } = useFavorites(); // ✅ FIXED NAME
+  const { favorites, addToFavorites, removeFromFavorites } = useFavorites(); 
   const { user } = useContext(FirebaseAuthContext);
   const navigate = useNavigate();
 

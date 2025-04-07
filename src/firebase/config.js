@@ -3,7 +3,7 @@ import { getFirestore } from "firebase/firestore"
 import { getAuth } from "firebase/auth"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDka73p3rULtT9EVDR9iMtWhDCsY4FNdEQ",
+  apiKey: "16ee2db26f5d46d8928bd7621ab5d9c2",
   authDomain: "recipes-bff88.firebaseapp.com",
   projectId: "recipes-bff88",
   storageBucket: "recipes-bff88.appspot.com",

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom"
 import { FirebaseAuthContext } from "../context/AuthProvider"
 
 const Recipes = () => {
-  const API_KEY = "9354d74c7d9847b5b32a8f8e7f578b5b"
+  const API_KEY = "16ee2db26f5d46d8928bd7621ab5d9c2"
   const [query, setQuery] = useState("")
   const [recipes, setRecipes] = useState([])
   const [loading, setLoading] = useState(true)
