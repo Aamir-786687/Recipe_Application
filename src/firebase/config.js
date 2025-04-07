@@ -9,7 +9,7 @@ const firebaseConfig = {
   storageBucket: "recipes-bff88.appspot.com",
   messagingSenderId: "321218631273",
   appId: "1:321218631273:web:e17dc326abc973b90bf4f8",
-}
+} 
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig)

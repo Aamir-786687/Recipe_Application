@@ -16,7 +16,7 @@ import { useFavorites } from "../hooks/useFavorites";
 
 const RecipeDetail = () => {
   const { id } = useParams();
-  const API_KEY = "16ee2db26f5d46d8928bd7621ab5d9c2";
+  const API_KEY = "16ee2db26f5d46d8928bd7621ab5d9c2"; 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
