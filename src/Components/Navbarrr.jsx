@@ -22,7 +22,7 @@ const Navbarrr = () => {
           <div className="flex items-center">
             <NavLink to="/home" className="flex items-center">
              
-              <span className="text-teal-600 font-bold text-2xl">RECIPE BOOK </span>
+              <a href="/"><span className="text-teal-600 font-bold text-2xl">RECIPE BOOK </span></a>
             </NavLink>
           </div>
 

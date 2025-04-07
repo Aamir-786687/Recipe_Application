@@ -6,7 +6,6 @@ import Register from "./pages/Register"
 import Login from "./pages/Login"
 import RecipeDetail from "./pages/RecipeDetail"
 import Favorites from "./pages/Favorites"
-import { FavoritesProvider } from "./context/FavoritesContext"
 import { FirebaseAuthProvider } from "./context/AuthProvider"
 import Navbarrr from "./Components/Navbarrr"
 import Footer from "./pages/Footer"
@@ -14,7 +13,7 @@ import Footer from "./pages/Footer"
 const App = () => {
   return (
     <FirebaseAuthProvider>
-      <FavoritesProvider>
+      
         <div className="flex flex-col min-h-screen bg-gray-50">
           <Navbarrr />
           <main className="flex-grow">
@@ -31,7 +30,7 @@ const App = () => {
           </main>
           <Footer />
         </div>
-      </FavoritesProvider>
+      
     </FirebaseAuthProvider>
   );
 };

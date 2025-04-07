@@ -1,67 +1,72 @@
-"use client"
+import { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  FaClock,
+  FaUtensils,
+  FaHeart,
+  FaRegHeart,
+  FaPrint,
+  FaShare,
+  FaCheckCircle,
+} from "react-icons/fa";
 
-import { useState, useEffect, useContext } from "react"
-import { useParams, useNavigate } from "react-router-dom"
-import axios from "axios"
-import { FaClock, FaUtensils, FaHeart, FaRegHeart, FaPrint, FaShare, FaCheckCircle } from "react-icons/fa"
-import { useFavorites } from "../context/FavoritesContext"
-import { FirebaseAuthContext } from "../context/AuthProvider"
+import { FirebaseAuthContext } from "../context/AuthProvider";
+import { useFavorites } from "../hooks/useFavorites"; // ✅ ADD THIS
 
 const RecipeDetail = () => {
-  const { id } = useParams()
-  const API_KEY = "9354d74c7d9847b5b32a8f8e7f578b5b"
-  const [recipe, setRecipe] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [activeTab, setActiveTab] = useState("ingredients")
-  const { favorites, addToFavorites, removeFromFavorite } = useFavorites()
-  const { user } = useContext(FirebaseAuthContext)
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const API_KEY = "9354d74c7d9847b5b32a8f8e7f578b5b";
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("ingredients");
 
-  const isFavorite = favorites.some((fav) => fav.id === Number.parseInt(id))
+  const { favorites, addToFavorites, removeFromFavorites } = useFavorites(); // ✅ FIXED NAME
+  const { user } = useContext(FirebaseAuthContext);
+  const navigate = useNavigate();
+
+  const isFavorite = favorites.some((fav) => fav.id === Number(id));
 
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        setLoading(true)
-        setError(null)
+        setLoading(true);
+        setError(null);
 
         const res = await axios.get(
-          `https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}&includeNutrition=true`,
-        )
+          `https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}&includeNutrition=true`
+        );
 
-        setRecipe(res.data)
-        setLoading(false)
+        setRecipe(res.data);
+        setLoading(false);
       } catch (error) {
-        console.error("API Error:", error)
-        setError("Failed to load recipe details. Please try again later.")
-        setLoading(false)
+        console.error("API Error:", error);
+        setError("Failed to load recipe details. Please try again later.");
+        setLoading(false);
       }
-    }
+    };
 
-    fetchRecipe()
-  }, [id])
+    fetchRecipe();
+  }, [id]);
 
   const handleFavoriteToggle = () => {
     if (!user) {
-      // Redirect to login if not authenticated
-      alert("Please login to save favorites")
-      navigate("/login", { state: { from: `/recipes/${id}` } })
-      return
+      alert("Please login to save favorites");
+      navigate("/login", { state: { from: `/recipes/${id}` } });
+      return;
     }
 
     if (isFavorite) {
-      removeFromFavorite(Number.parseInt(id))
-      alert("Recipe removed from favorites")
+      removeFromFavorites(Number(id)); // ✅ FIXED NAME
+      alert("Recipe removed from favorites");
     } else {
-      addToFavorites(recipe)
-      alert("Recipe added to favorites")
+      addToFavorites(recipe);
+      alert("Recipe added to favorites");
     }
-  }
+  };
 
-  const handlePrint = () => {
-    window.print()
-  }
+  const handlePrint = () => window.print();
 
   const handleShare = () => {
     if (navigator.share) {
@@ -71,19 +76,19 @@ const RecipeDetail = () => {
           text: `Check out this recipe: ${recipe.title}`,
           url: window.location.href,
         })
-        .catch((error) => console.log("Error sharing:", error))
+        .catch((error) => console.log("Error sharing:", error));
     } else {
-      navigator.clipboard.writeText(window.location.href)
-      alert("Link copied to clipboard!")
+      navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard!");
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-500"></div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -94,10 +99,10 @@ const RecipeDetail = () => {
           <p>{error}</p>
         </div>
       </div>
-    )
+    );
   }
 
-  if (!recipe) return null
+  if (!recipe) return null;
 
   return (
     <div className="bg-gray-50 py-10 px-4">
@@ -108,10 +113,16 @@ const RecipeDetail = () => {
               src={recipe.image || "/images/placeholder-food.jpg"}
               alt={recipe.title}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/images/placeholder-food.jpg";
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
               <div className="p-6 w-full">
-                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{recipe.title}</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  {recipe.title}
+                </h1>
               </div>
             </div>
           </div>
@@ -133,7 +144,9 @@ const RecipeDetail = () => {
                 <button
                   onClick={handleFavoriteToggle}
                   className={`flex items-center px-4 py-2 rounded-md ${
-                    isFavorite ? "bg-red-500 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    isFavorite
+                      ? "bg-red-500 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   } transition-colors`}
                 >
                   {isFavorite ? <FaHeart className="mr-2" /> : <FaRegHeart className="mr-2" />}
@@ -165,36 +178,19 @@ const RecipeDetail = () => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="border-b border-gray-200">
             <nav className="flex">
-              <button
-                onClick={() => setActiveTab("ingredients")}
-                className={`px-6 py-4 text-sm font-medium ${
-                  activeTab === "ingredients"
-                    ? "border-b-2 border-teal-500 text-teal-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Ingredients
-              </button>
-              <button
-                onClick={() => setActiveTab("instructions")}
-                className={`px-6 py-4 text-sm font-medium ${
-                  activeTab === "instructions"
-                    ? "border-b-2 border-teal-500 text-teal-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Instructions
-              </button>
-              <button
-                onClick={() => setActiveTab("nutrition")}
-                className={`px-6 py-4 text-sm font-medium ${
-                  activeTab === "nutrition"
-                    ? "border-b-2 border-teal-500 text-teal-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Nutrition
-              </button>
+              {["ingredients", "instructions", "nutrition"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-4 text-sm font-medium ${
+                    activeTab === tab
+                      ? "border-b-2 border-teal-500 text-teal-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
             </nav>
           </div>
 
@@ -214,12 +210,28 @@ const RecipeDetail = () => {
                 ))}
               </ul>
             )}
+
+            {activeTab === "instructions" && (
+              <div className="prose max-w-none">
+                <div dangerouslySetInnerHTML={{ __html: recipe.instructions }}></div>
+              </div>
+            )}
+
+            {activeTab === "nutrition" && (
+              <ul className="list-disc pl-5 space-y-2 text-gray-700">
+                {recipe.nutrition?.nutrients?.slice(0, 10).map((nutrient, index) => (
+                  <li key={index}>
+                    <strong>{nutrient.name}:</strong> {nutrient.amount}
+                    {nutrient.unit}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RecipeDetail
-
+export default RecipeDetail;

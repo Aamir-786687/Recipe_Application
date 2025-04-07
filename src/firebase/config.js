@@ -1,12 +1,20 @@
+import { initializeApp } from "firebase/app"
+import { getFirestore } from "firebase/firestore"
+import { getAuth } from "firebase/auth"
 
-import { initializeApp } from "firebase/app";
 const firebaseConfig = {
-    apiKey: "5cb7e02c54724129bcd6402da3c77e8a",
-    authDomain: "recipes-bff88.firebaseapp.com",
-    projectId: "recipes-bff88",
-    storageBucket: "recipes-bff88.firebasestorage.app",
-    messagingSenderId: "321218631273",
-    appId: "1:321218631273:web:e17dc326abc973b90bf4f8"
-};
+  apiKey: "AIzaSyDka73p3rULtT9EVDR9iMtWhDCsY4FNdEQ",
+  authDomain: "recipes-bff88.firebaseapp.com",
+  projectId: "recipes-bff88",
+  storageBucket: "recipes-bff88.appspot.com",
+  messagingSenderId: "321218631273",
+  appId: "1:321218631273:web:e17dc326abc973b90bf4f8",
+}
 
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
+const auth = getAuth(app)
+
+export { app, db, auth }
+

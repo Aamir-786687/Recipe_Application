@@ -1,79 +1,76 @@
-"use client";
-import { Link } from "react-router-dom";
-import { FaClock, FaUtensils, FaHeart } from "react-icons/fa";
-import { useFavorites } from "../context/FavoritesContext";
+import React from "react";
+import { FaHeart } from "react-icons/fa";
+import { useFavorites } from "../hooks/useFavorites";
 
-const RecipeCard = ({ recipe, showViewButton = true }) => {
-  const { favorites, addToFavorites, removeFromFavorite } = useFavorites();
-
+export default function RecipeCard({ recipe, showViewButton = true }) {
+  const { favorites, addToFavorites, removeFromFavorites } = useFavorites();
   const isFavorite = favorites.some((fav) => fav.id === recipe.id);
 
-  const handleFavoriteClick = (e) => {
+  const toggleFavorite = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (isFavorite) {
-      removeFromFavorite(recipe.id);
-      alert("Recipe removed from favorites");
+      removeFromFavorites(recipe.id);
     } else {
       addToFavorites(recipe);
-      alert("Recipe added to favorites");
     }
   };
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-      <div className="relative">
+    <div className="group relative bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <div className="relative h-48 w-full bg-gray-100">
         <img
           src={recipe.image || "/images/placeholder-food.jpg"}
           alt={recipe.title}
-          className="w-full h-48 object-cover"
+          className="object-cover object-center w-full h-full"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = "/images/placeholder-food.jpg";
           }}
         />
         <button
-          onClick={handleFavoriteClick}
-          className={`absolute top-3 right-3 p-2 rounded-full ${
-            isFavorite ? "bg-red-500 text-white" : "bg-white text-gray-600"
-          } shadow-md hover:scale-110 transition-transform duration-200`}
+          onClick={toggleFavorite}
+          className="absolute top-3 right-3 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:bg-white"
           aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
-          <FaHeart className={isFavorite ? "text-white" : "text-gray-400 hover:text-red-500"} />
+          <FaHeart
+            className={`h-5 w-5 transition-colors ${
+              isFavorite ? "text-red-500" : "text-gray-400 hover:text-red-500"
+            }`}
+          />
         </button>
       </div>
 
       <div className="p-4">
-        <h3 className="font-medium text-lg text-gray-900 mb-2 line-clamp-1">{recipe.title}</h3>
+        <h3 className="font-medium text-lg text-gray-900 mb-2 line-clamp-1">
+          {recipe.title}
+        </h3>
 
         <div className="flex items-center text-sm text-gray-600 mb-4">
           {recipe.readyInMinutes && (
             <div className="flex items-center mr-4">
-              <FaClock className="mr-1 text-teal-500" />
+              <span className="mr-1 text-teal-500">⏱️</span>
               <span>{recipe.readyInMinutes} mins</span>
             </div>
           )}
-
           {recipe.servings && (
             <div className="flex items-center">
-              <FaUtensils className="mr-1 text-teal-500" />
+              <span className="mr-1 text-teal-500">🍽️</span>
               <span>{recipe.servings} servings</span>
             </div>
           )}
         </div>
 
         {showViewButton && (
-          <Link
-            to={`/recipes/${recipe.id}`}
+          <a
+            href={`/recipes/${recipe.id}`}
             className="block w-full text-center py-2 px-4 bg-teal-500 text-white rounded-md hover:bg-teal-600 transition-colors"
           >
             View Recipe
-          </Link>
+          </a>
         )}
       </div>
     </div>
   );
-};
-
-export default RecipeCard;
+}
